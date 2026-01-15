@@ -74,6 +74,7 @@ vim.pack.add({
   { src = "https://github.com/nvim-mini/mini.tabline" },
   { src = "https://github.com/stevearc/oil.nvim" },
   { src = "https://github.com/neovim/nvim-lspconfig" },
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 })
 
 -- Colorsheme
@@ -123,7 +124,13 @@ vim.diagnostic.config({
 })
 
 
-
+-- Treesitter highlighting
+require("nvim-treesitter").setup({
+  ensure_installed = { "c", "lua", "python" },
+  highlight = {
+    enable = true,
+  }
+})
 
 
 
