@@ -65,9 +65,11 @@ vim.pack.add({
   { src = "https://github.com/sainnhe/everforest" },
   { src = "https://github.com/nvim-mini/mini.ai" },
   { src = "https://github.com/nvim-mini/mini.comment" },
+  { src = "https://github.com/nvim-mini/mini.cmdline" },
   { src = "https://github.com/nvim-mini/mini.icons" },
   { src = "https://github.com/nvim-mini/mini.pairs" },
   { src = "https://github.com/nvim-mini/mini.pick" },
+  { src = "https://github.com/nvim-mini/mini.splitjoin" },
   { src = "https://github.com/nvim-mini/mini.surround" },
   { src = "https://github.com/nvim-mini/mini.tabline" },
   { src = "https://github.com/stevearc/oil.nvim" },
@@ -76,6 +78,7 @@ vim.pack.add({
 
 -- Colorsheme
 vim.cmd("colorscheme everforest")
+-- vim.cmd("colorscheme habamax")
 
 -- Mini Pick
 require("mini.pick").setup()
@@ -83,8 +86,10 @@ vim.keymap.set("n", "<leader>ff", ":Pick files<CR>")
 vim.keymap.set("n", "<leader>fg", ":Pick grep_live<CR>")
 
 require("mini.ai").setup()
+require("mini.cmdline").setup()
 require("mini.pairs").setup()
 require("mini.icons").setup()
+require("mini.splitjoin").setup()
 require("mini.surround").setup()
 require("mini.tabline").setup()
 
