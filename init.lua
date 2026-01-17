@@ -73,9 +73,17 @@ vim.pack.add({
   { src = "https://github.com/nvim-mini/mini.surround" },
   { src = "https://github.com/nvim-mini/mini.tabline" },
   { src = "https://github.com/stevearc/oil.nvim" },
+  { src = "https://github.com/stevearc/quicker.nvim" },
   { src = "https://github.com/neovim/nvim-lspconfig" },
   { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
+  { src = "https://github.com/kassio/neoterm" },
 })
+
+
+vim.keymap.set("n", "<leader>c", "<Plug>(neoterm-repl-send-line)")
+vim.keymap.set("n", "<leader>r", "<Plug>(neoterm-repl-send)")
+vim.keymap.set("v", "<leader>r", "<Plug>(neoterm-repl-send)")
+
 
 -- Colorsheme
 vim.cmd("colorscheme everforest")
@@ -97,6 +105,13 @@ require("mini.tabline").setup()
 -- Oil
 require("oil").setup()
 vim.keymap.set("n", "<leader>e", ":Oil<CR>")
+
+-- Quicker
+require("quicker").setup()
+vim.keymap.set("n", "<leader>qf", function() require("quicker").toggle() end)
+vim.keymap.set("n", "<leader>l", function() require("quicker").toggle({ loclist = true }) end)
+vim.keymap.set("n", ">", function() require("quicker").expand({ before = 2, after = 2, add_to_existing = true }) end)
+vim.keymap.set("n", "<", function() require("quicker").collapse() end)
 
 
 -- Enable Language Servers, Autocomplete, & Diagnostics
