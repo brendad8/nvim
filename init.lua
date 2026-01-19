@@ -75,7 +75,7 @@ vim.pack.add({
   { src = "https://github.com/stevearc/oil.nvim" },
   { src = "https://github.com/stevearc/quicker.nvim" },
   { src = "https://github.com/neovim/nvim-lspconfig" },
-  { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter", branch = "main", build = ":TSUpdate" },
   { src = "https://github.com/kassio/neoterm" },
 })
 
@@ -94,11 +94,17 @@ require("mini.pick").setup()
 vim.keymap.set("n", "<leader>ff", ":Pick files<CR>")
 vim.keymap.set("n", "<leader>fg", ":Pick grep_live<CR>")
 
-require("mini.ai").setup()
+-- require("mini.ai").setup()
 require("mini.cmdline").setup()
 require("mini.pairs").setup()
 require("mini.icons").setup()
-require("mini.splitjoin").setup()
+require("mini.splitjoin").setup({
+  mappings = {
+    toggle = 'gs',
+    split = '',
+    join = '',
+  },
+})
 require("mini.surround").setup()
 require("mini.tabline").setup()
 
@@ -138,13 +144,12 @@ vim.diagnostic.config({
   severity_sort = true,
 })
 
-
 -- Treesitter highlighting
 require("nvim-treesitter").setup({
   ensure_installed = { "c", "lua", "python" },
   highlight = {
     enable = true,
-  }
+  },
 })
 
 
@@ -154,11 +159,11 @@ local function pack_clean()
 	local active_plugins = {}
 	local unused_plugins = {}
 
-	for _, plugin in ipairs(vim.pack.get()) do
+	for plugin in vim.pack.get() do
 		active_plugins[plugin.spec.name] = plugin.active
 	end
 
-	for _, plugin in ipairs(vim.pack.get()) do
+	for plugin in vim.pack.get() do
 		if not active_plugins[plugin.spec.name] then
 			table.insert(unused_plugins, plugin.spec.name)
 		end
