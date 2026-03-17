@@ -1,5 +1,6 @@
 local vim = vim
 
+
 -- Globals
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -17,15 +18,14 @@ vim.o.swapfile = false
 vim.o.winborder = "rounded"
 vim.o.clipboard = "unnamedplus"
 vim.o.completeopt = "menuone,noselect,popup"
-vim.o.pumheight = 8
-
+vim.o.pumheight = 8 -- max height for autocompletion menu
 
 
 -- Highlight text when copying
 vim.api.nvim_create_autocmd("TextYankPost", {
     group = vim.api.nvim_create_augroup("highlight-yank", { clear = true }),
     callback = function()
-        vim.highlight.on_yank()
+        vim.hl.on_yank()
     end,
 })
 
@@ -44,15 +44,13 @@ vim.keymap.set("v", "<S-Tab>", "<gv")
 vim.keymap.set("n", "<leader>bd", ":bd<CR>")
 vim.keymap.set("n", "<leader>bD", ":bd!<CR>")
 
-vim.keymap.set("n", "<leader>-", ":vert botr new<CR>")
-vim.keymap.set("n", "<leader>|", ":belowr new<CR>")
+vim.keymap.set("n", "<leader>-", ":horiz belowr new<CR>")
+vim.keymap.set("n", "<leader>|", ":vert rightb new<CR>")
 
 vim.keymap.set("n", "<leader>h", "<C-w>h")
 vim.keymap.set("n", "<leader>j", "<C-w>j")
 vim.keymap.set("n", "<leader>k", "<C-w>k")
 vim.keymap.set("n", "<leader>l", "<C-w>l")
-
-vim.keymap.set("n", "<leader>cf", vim.lsp.buf.format)
 
 vim.keymap.set("i", "<Tab>", function()
     if vim.fn.pumvisible() == 1 then
@@ -65,15 +63,21 @@ end, { expr = true })
 
 -- Plugins
 vim.pack.add({
+    -- { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
+
     { src = "https://github.com/sainnhe/everforest" },
+
+    { src = "https://github.com/nvim-lua/plenary.nvim" },
+    { src = "https://github.com/nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    { src = "https://github.com/nvim-telescope/telescope.nvim" },
+
+    { src = "https://github.com/ej-shafran/compile-mode.nvim" },
 
     { src = "https://github.com/nvim-mini/mini.ai" },
     { src = "https://github.com/nvim-mini/mini.cmdline" },
     { src = "https://github.com/nvim-mini/mini.completion" },
-    { src = "https://github.com/nvim-mini/mini.extra" },
     { src = "https://github.com/nvim-mini/mini.icons" },
     { src = "https://github.com/nvim-mini/mini.pairs" },
-    { src = "https://github.com/nvim-mini/mini.pick" },
     { src = "https://github.com/nvim-mini/mini.snippets" },
     { src = "https://github.com/nvim-mini/mini.splitjoin" },
     { src = "https://github.com/nvim-mini/mini.surround" },
@@ -88,18 +92,29 @@ vim.pack.add({
 })
 
 
+-- tree-sitter 
+-- require("nvim-treesitter.configs").setup({
+--   ensure_installed = { "lua", "markdown", "bash", "python", "json", "zig" },
+--   highlight = { enable = true },
+-- })
+
+
 -- Colorsheme
 vim.cmd("colorscheme everforest")
 
+vim.g.compile_mode = {
+   default_command = {
+      python = "python3 ",
+      lua = "lua ",
+      c = "zig cc ",
+      zig = "zig run ",
+    },
+}
+vim.keymap.set("n", "<leader>c", ":below Compile<CR>")
+vim.keymap.set("n", "<leader>r", ":below Recompile<CR>")
+
 -- Mini Plugins
-require("mini.extra").setup()
-require("mini.ai").setup({
-    custom_textobjects = {
-        B = MiniExtra.gen_ai_spec.buffer(),
-        I = MiniExtra.gen_ai_spec.indent(),
-        L = MiniExtra.gen_ai_spec.line()
-    }
-})
+require("mini.ai").setup()
 require("mini.cmdline").setup()
 require("mini.completion").setup({
     delay = { completion = 50, info = 50, signature = 25 },
@@ -119,83 +134,50 @@ require("mini.pairs").setup({
     mappings = {
         [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\]." },
         ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\]." },
-        ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\]." },
+        -- ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\]." },
         ["["] = { action = "open", pair = "[]", neigh_pattern = ".[%s%z%)}%]]", register = { cr = false }, },
-        ["{"] = { action = "open", pair = "{}", neigh_pattern = ".[%s%z%)}%]]", register = { cr = false }, },
+        -- ["{"] = { action = "open", pair = "{}", neigh_pattern = ".[%s%z%)}%]]", register = { cr = false }, },
         ["("] = { action = "open", pair = "()", neigh_pattern = ".[%s%z%)]", register = { cr = false }, },
         ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^%w\\][^%w]", register = { cr = false }, },
         ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%w\\][^%w]", register = { cr = false }, },
-        ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^%w\\][^%w]", register = { cr = false }, },
-    },
+    }
 })
-require("mini.pick").setup({
-    delay = { async = 1, busy = 1,},
-    mappings = {
-        send_to_qflist = {
-            char = '<C-q>',
-            func = function()
-              local list = {}
-              local matches = require("mini.pick").get_picker_matches().all
-
-              for _, match in ipairs(matches) do
-                if type(match) == 'table' then
-                  table.insert(list, match)
-                else
-                  local path, lnum, col, search = string.match(match, '(.-)%z(%d+)%z(%d+)%z%s*(.+)')
-                  local text = path and string.format('%s [%s:%s]  %s', path, lnum, col, search)
-                  local filename =  path or vim.trim(match):match('%s+(.+)')
-
-                  table.insert(list, {
-                    filename = filename or match,
-                    lnum = lnum or 1,
-                    col = col or 1,
-                    text = text or match,
-                  })
-                end
-              end
-
-              vim.fn.setqflist(list, 'r')
-            end,
-          },
-    },
-    window = {
-       prompt_caret = '|',
-       prompt_prefix = '> ',
-    },
-})
-vim.keymap.set("n", "<leader>ff", MiniExtra.pickers.explorer)
-vim.keymap.set("n", "<leader>fg", MiniPick.builtin.grep_live)
-vim.keymap.set("n", "<leader>fh", MiniPick.builtin.help)
-vim.keymap.set("n", "<leader>fd", MiniExtra.pickers.diagnostic)
-vim.keymap.set("n", "<leader>fb", MiniExtra.pickers.buf_lines)
 require("mini.icons").setup()
-MiniIcons.tweak_lsp_kind()
+require("mini.icons").tweak_lsp_kind()
 require("mini.snippets").setup()
-require("mini.splitjoin").setup({
-    mappings = { toggle = 'gs', split = '', join = '', },
-})
+require("mini.splitjoin").setup({ mappings = { toggle = 'gs', split = '', join = '' } })
+-- require("mini.statusline").setup()
 require("mini.surround").setup()
 require("mini.tabline").setup()
+
 
 -- Oil
 require("oil").setup()
 vim.keymap.set("n", "<leader>e", ":Oil<CR>")
 
+
 -- Quicker
-require("quicker").setup()
 vim.keymap.set("n", "<leader>qf", function() require("quicker").toggle() end)
-vim.keymap.set("n", ">", function() require("quicker").expand({ before = 2, after = 2, add_to_existing = true }) end)
-vim.keymap.set("n", "<", function() require("quicker").collapse() end)
+require("quicker").setup({
+    keys = {
+        { ">", function() require("quicker").expand({ before = 2, after = 2, add_to_existing = true }) end },
+        { "<", function() require("quicker").collapse() end }, },
+})
+vim.keymap.set("n", "]q", ":cnext<CR>")
+vim.keymap.set("n", "[q", ":cprev<CR>")
 
 
--- Enable Language Servers, Autocomplete, & Diagnostics
+-- Download/Enable Language Servers
 require("mason").setup()
 require("mason-lspconfig").setup({
-    ensure_installed = { "lua_ls", "ty", "ruff", "clangd" }
+    ensure_installed = { "lua_ls", "ty", "ruff", "clangd" },
+    automatic_enable = true,
 })
 
 
+-- Diagnostics
 vim.diagnostic.enable()
+vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float)
 vim.diagnostic.config({
     virtual_text = false,
     signs = true,
@@ -203,34 +185,39 @@ vim.diagnostic.config({
     update_in_insert = false,
     severity_sort = true,
 })
-vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float)
-vim.keymap.set("n", "<leader>dq", vim.diagnostic.setqflist)
 
 
-
-
+-- Telescope
+require("telescope").setup({
+    defaults = {
+        layout_strategy = "horizontal",
+        layout_config = { width = 0.6, height = 0.5, preview_width = 0.5 },
+    },
+})
+local builtin = require('telescope.builtin')
+vim.keymap.set("n", "<leader>ff", builtin.find_files)
+vim.keymap.set("n", "<leader>fg", builtin.live_grep)
+vim.keymap.set("n", "<leader>fs", builtin.grep_string)
+vim.keymap.set("n", "<leader>fd", builtin.diagnostics)
+vim.keymap.set("n", "<leader>fh", builtin.help_tags)
 
 
 -- Clean Unused Packages
 local function pack_clean()
     local active_plugins = {}
     local unused_plugins = {}
-
     for _, plugin in ipairs(vim.pack.get()) do
         active_plugins[plugin.spec.name] = plugin.active
     end
-
     for _, plugin in ipairs(vim.pack.get()) do
         if not active_plugins[plugin.spec.name] then
             table.insert(unused_plugins, plugin.spec.name)
         end
     end
-
     if #unused_plugins == 0 then
         print("No unused plugins.")
         return
     end
-
     local choice = vim.fn.confirm("Remove unused plugins?", "&Yes\n&No", 2)
     if choice == 1 then
         vim.pack.del(unused_plugins)
