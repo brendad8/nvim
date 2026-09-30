@@ -189,36 +189,14 @@ hi("@storageclass.c", { fg = c.keyword, bold = true, })
 -- Treesitter: functions
 -- ============================================================================
 
--- Function declarations are purple and bold.
-hi("@function", {
-  fg = c.function_,
-  -- bold = true,
-})
+hi("@function", { fg = c.function_, })
+hi("@function.zig", { fg = c.function_, })
 
-hi("@function.zig", {
-  fg = c.function_,
-  -- bold = true,
-})
+hi("@function.call", { fg = c.fg, })
+hi("@function.call.zig", { fg = c.fg, })
 
--- Function calls intentionally remain normal foreground.
-hi("@function.call", {
-  fg = c.fg,
-  bold = false,
-})
-
-hi("@function.call.zig", {
-  fg = c.fg,
-  bold = false,
-})
-
--- Builtin functions such as @import remain orange.
-hi("@function.builtin.zig", {
-  fg = c.builtin,
-})
-
-hi("@function.macro.zig", {
-  fg = c.builtin,
-})
+hi("@function.builtin.zig", { fg = c.builtin, })
+hi("@function.macro.zig", { fg = c.builtin, })
 
 -- ============================================================================
 -- Treesitter: variables / identifiers
@@ -234,60 +212,30 @@ hi("@keyword.import.zig", { fg = c.builtin, })
 -- Treesitter: Zig builtins
 -- ============================================================================
 
-hi("@attribute.zig", {
-  fg = c.builtin,
-})
-
-hi("@constant.builtin.zig", {
-  fg = c.builtin,
-})
+hi("@attribute.zig", { fg = c.builtin, })
 
 -- ============================================================================
 -- Treesitter: numbers / constants
 -- ============================================================================
 
-hi("@number", {
-  fg = c.number,
-})
-
-hi("@number.zig", {
-  fg = c.number,
-})
-
-hi("@boolean", {
-  fg = c.null,
-})
-
-hi("@boolean.zig", {
-  fg = c.null,
-})
-
-hi("@constant.builtin", {
-  fg = c.null,
-})
+hi("@number", { fg = c.number, })
+hi("@number.zig", { fg = c.number, })
+hi("@boolean", { fg = c.null, })
+hi("@boolean.zig", { fg = c.null, })
+hi("@constant.builtin", { fg = c.null, })
+hi("@constant.builtin.zig", { fg = c.null, })
 
 -- ============================================================================
 -- Treesitter: comments
 -- ============================================================================
 
-hi("@comment", {
-  fg = c.comment,
-  italic = true,
-})
-
-hi("@comment.zig", {
-  fg = c.comment,
-  italic = true,
-})
+hi("@comment", { fg = c.comment, italic = true, })
+hi("@comment.zig", { fg = c.comment, italic = true, })
+hi("@comment.c", { fg = c.comment, italic = true, })
 
 -- ============================================================================
 -- Treesitter: C / C++ preprocessor
 -- ============================================================================
-
--- IMPORTANT:
--- Tree-sitter's C parser identifies #include specifically as
--- @keyword.import.c. It links to @keyword by default, so this
--- must explicitly override the generic keyword styling.
 
 hi("@keyword.import.c", { fg = c.builtin, })
 hi("@keyword.directive", { fg = c.builtin, })
