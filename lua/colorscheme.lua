@@ -29,7 +29,7 @@ local c = {
 
   -- UI
   cursorline = "#36383d",
-  selection  = "#222222",
+  selection  = "#4c4c4c",
   border     = "#444444",
   line_nr    = "#666666",
   line_nr_active = "#dddddd",
