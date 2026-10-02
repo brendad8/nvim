@@ -76,6 +76,8 @@ hi("PmenuThumb", { bg = "#666666", })
 
 hi("MatchParen", { fg = c.builtin, bold = true, })
 
+hi("QuickFixLine", { fg = c.fg })
+
 -- ============================================================================
 -- Generic Vim syntax groups
 -- ============================================================================
@@ -264,5 +266,4 @@ hi("DiagnosticUnderlineWarn", { undercurl = true, sp = c.builtin, })
 hi("@function.builtin.lua", { fg = c.builtin })
 hi("@punctuation.bracket.lua", { fg = c.fg })
 hi("@constructor.lua", { fg = c.fg })
-
 

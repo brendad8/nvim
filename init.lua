@@ -142,8 +142,8 @@ require("nvim-treesitter").setup()
 require("nvim-treesitter").install({ "c", "python", "zig", "lua", "odin" })
 
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "c", "h", "py", "lua", "odin", "zig" },
-  callback = function() vim.treesitter.start() end,
+    pattern = { "c", "h", "py", "lua", "odin", "zig" },
+    callback = function() vim.treesitter.start() end,
 })
 
 -- find files
@@ -168,4 +168,5 @@ vim.opt.findfunc = "v:lua.native_find"
 vim.keymap.set("n", "<leader>f", ":find ", { silent = false })
 
 require("colorscheme")
+
 
